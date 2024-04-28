@@ -213,41 +213,33 @@ function unset_board_config_all()
 function usagemedia()
 {
 	check_config RK_KERNEL_DTS RK_KERNEL_DEFCONFIG || return 0
-
 	echo -e "make -C ${SDK_MEDIA_DIR}"
-
 	finish_build
 }
 
 function usagesysdrv()
 {
 	check_config RK_KERNEL_DTS RK_KERNEL_DEFCONFIG || return 0
-
 	echo -e "make -C ${SDK_SYSDRV_DIR}"
-
 	finish_build
 }
 
 function usagekernel()
 {
 	check_config RK_KERNEL_DTS RK_KERNEL_DEFCONFIG || return 0
-
 	echo -e "make kernel -C ${SDK_SYSDRV_DIR} ${_FDS} \
 		KERNEL_CFG=${RK_KERNEL_DEFCONFIG} ${_FDS} \
 		KERNEL_DTS=${RK_KERNEL_DTS} ${_FDS} \
 		KERNEL_CFG_FRAGMENT=${RK_KERNEL_DEFCONFIG_FRAGMENT}"
-
 	finish_build
 }
 
 function usageuboot()
 {
 	check_config RK_UBOOT_DEFCONFIG || return 0
-
 	echo -e "make uboot -C ${SDK_SYSDRV_DIR} ${_FDS}  \
 		UBOOT_CFG=${RK_UBOOT_DEFCONFIG} ${_FDS} \
 		UBOOT_CFG_FRAGMENT=${RK_UBOOT_DEFCONFIG_FRAGMENT}"
-
 	finish_build
 }
 
@@ -255,7 +247,6 @@ function usagerootfs()
 {
 	# check_config RK_ROOTFS_IMG || return 0
 	echo -e "make rootfs -C ${SDK_SYSDRV_DIR} "
-
 	finish_build
 }
 
@@ -319,9 +310,7 @@ function build_info(){
 	if [ ! -L $BOARD_CONFIG ];then
 		echo "No found target board config!!!"
 	fi
-
 	build_get_sdk_version
-
 	# Support copy RK-RELEASE-NOTES-V*.txt from project/cfg/BoardConfig*/RK-RELEASE-NOTES-V*.txt to SDK_ROOT_DIR
 	local board_dir board_version_notes
 	board_dir=$(realpath $BOARD_CONFIG)
@@ -446,22 +435,17 @@ function build_check(){
 
 function build_app() {
 	check_config RK_APP_TYPE || return 0
-
 	build_meta --export # export meta header files
 	test -d ${SDK_APP_DIR} && make -C ${SDK_APP_DIR}
-
 	finish_build
 }
 
 function build_uboot(){
 	check_config RK_UBOOT_DEFCONFIG || return 0
-
 	echo "============Start building uboot============"
 	echo "TARGET_UBOOT_CONFIG=$RK_UBOOT_DEFCONFIG $RK_UBOOT_DEFCONFIG_FRAGMENT"
 	echo "========================================="
-
 	make uboot -C ${SDK_SYSDRV_DIR} UBOOT_CFG=${RK_UBOOT_DEFCONFIG} UBOOT_CFG_FRAGMENT=${RK_UBOOT_DEFCONFIG_FRAGMENT}
-
 	finish_build
 }
 
@@ -500,28 +484,22 @@ function build_env(){
 
 function build_media(){
 	echo "============Start building media============"
-
 	make -C ${SDK_MEDIA_DIR}
-
 	finish_build
 }
 
 function build_driver(){
 	echo "============Start building kernel's drivers============"
-
 	mkdir -p ${RK_PROJECT_OUTPUT_IMAGE}
 	build_kernel
 	make -C ${SDK_SYSDRV_DIR} drv
-
 	finish_build
 }
 
 function build_sysdrv(){
 	echo "============Start building sysdrv============"
-
 	mkdir -p ${RK_PROJECT_OUTPUT_IMAGE}
 	make -C ${SDK_SYSDRV_DIR}
-
 	finish_build
 }
 
@@ -545,15 +523,12 @@ function build_kernel(){
 
 function build_rootfs(){
 	check_config RK_BOOT_MEDIUM || check_config RK_TARGET_ROOTFS || return 0
-
 	make rootfs -C ${SDK_SYSDRV_DIR}
-
 	finish_build
 }
 
 function build_recovery(){
 	check_config RK_ENABLE_RECOVERY || return 0
-
 	local kernel_image
 	local kernel_dtb_file="$RK_PROJECT_PATH_RAMDISK/${RK_KERNEL_DTS/%.dts/.dtb}"
 	local ota_script="$OTA_SCRIPT_PATH/RK_OTA_update.sh"
@@ -732,7 +707,6 @@ EOF
 
 function build_ota(){
 	check_config RK_ENABLE_RECOVERY || check_config RK_ENABLE_OTA || return 0
-
 	local update_img update_script tar_cmd
 
 	if [ -z "$RK_OTA_RESOURCE" ]; then
@@ -776,10 +750,8 @@ function build_updateimg(){
 
 	IMAGE_PATH=$RK_PROJECT_OUTPUT_IMAGE
 	PACK_TOOL_PATH=$SDK_ROOT_DIR/tools/linux/Linux_Pack_Firmware
-
 	# run update.img package script
 	$PACK_TOOL_PATH/mk-update_pack.sh -id $RK_CHIP -i $IMAGE_PATH
-
 	finish_build
 }
 
@@ -787,11 +759,9 @@ function build_unpack_updateimg(){
 	IMAGE_PATH=$RK_PROJECT_OUTPUT_IMAGE/update.img
 	UNPACK_FILE_DIR=$RK_PROJECT_OUTPUT_IMAGE/unpack
 	PACK_TOOL_PATH=$SDK_ROOT_DIR/tools/linux/Linux_Pack_Firmware
-
 	# run update.img unpack script
 	mkdir -p $UNPACK_FILE_DIR
 	$PACK_TOOL_PATH/mk-update_unpack.sh -i $IMAGE_PATH -o $UNPACK_FILE_DIR
-
 	finish_build
 }
 
