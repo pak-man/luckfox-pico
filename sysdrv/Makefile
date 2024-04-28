@@ -468,15 +468,20 @@ busybox_menuconfig:
 			$(SYSDRV_DIR)/tools/board/busybox/$(BUSYBOX_CFG);
 
 busybox: prepare
-	@echo -e "$(C_GREEN) ==sysdrv== build busybox   $(C_NORMAL)"
+	@echo -e "$(C_GREEN) ==sysdrv== prepare busybox   $(C_NORMAL)"
 	test -f $(BUSYBOX_DIR)/_install/bin/busybox  || (\
+		@echo -e "$(C_YELLOW) ==sysdrv== deleting previous install of busybox$(C_NORMAL)"
 		rm $(BUSYBOX_DIR) -rf ;\
+		@echo -e "$(C_GREEN) ==sysdrv== git cloning busybox$(C_NORMAL)"
 		git clone --branch=$(BUSYBOX_BRANCH) https://git.busybox.net/busybox $(SYSDRV_DIR)/source/busybox ;\
-		mkdir -p $(BUSYBOX_DIR) ;\
+#		mkdir -p $(BUSYBOX_DIR) ;\
 #		tar xjf $(SYSDRV_DIR)/tools/board/busybox/$(BUSYBOX_VER).tar.bz2 -C $(BUSYBOX_DIR) ;\
-		cp $(SYSDRV_DIR)/tools/board/busybox/$(BUSYBOX_CFG) $(BUSYBOX_DIR)//.config ;\
+		@echo -e "$(C_GREEN) ==sysdrv== copy busybox config$(C_NORMAL)"
+		cp $(SYSDRV_DIR)/tools/board/busybox/$(BUSYBOX_CFG) $(BUSYBOX_DIR) ;\
+# don´t apply those patches, they were for busybox 1.27.1
 #		cp -fv $(SYSDRV_DIR)/tools/board/busybox/*.patch $(SYSDRV_DIR)/tools/board/busybox/busybox.patch.sh $(BUSYBOX_DIR)/$(BUSYBOX_VER)/ ;\
 #		pushd $(BUSYBOX_DIR)/$(BUSYBOX_VER)/;$(SHELL) ./busybox.patch.sh ; $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -j$(SYSDRV_JOBS) ; popd ;\
+		@echo -e "$(C_GREEN) ==sysdrv== build busybox$(C_NORMAL)"
 		$(MAKE) CROSS_COMPILE=$(CROSS_COMPILE) -C $(BUSYBOX_DIR) install ;\
 	);
 ifeq ($(SYSDRV_BUILD_RAMDISK_FLAG),YES)
